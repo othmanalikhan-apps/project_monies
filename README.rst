@@ -20,8 +20,7 @@ Key Features
 
 Authors
 =======
-Name: Othman Alikhan
-Email: oz.alikhan@gmail.com
+Othman Alikhan, oz.alikhan@gmail.com
 
 
 TODO
