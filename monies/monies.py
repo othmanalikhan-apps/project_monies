@@ -1,6 +1,7 @@
 """
-A script responsible for IO handling of Santander text files of bank
-statements.
+A script responsible for parsing bank statement files, specifically for
+Santander text files, and visualising where the money is being used to
+better understand where it can be saved.
 """
 
 
