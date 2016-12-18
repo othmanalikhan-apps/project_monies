@@ -73,5 +73,5 @@ target/
 # Pycharm
 .idea/
 
-# Raw data
-data/
+# Personal bank statement files
+res/ledgers

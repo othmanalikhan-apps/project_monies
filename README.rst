@@ -22,3 +22,8 @@ Authors
 =======
 Name: Othman Alikhan
 Email: oz.alikhan@gmail.com
+
+
+TODO
+====
+- Let script run only on text files within the same directory for ease of use
