@@ -56,3 +56,19 @@ def parse(data):
     return entries
 
 
+def parseFile(iPath, oPath):
+    """
+    Parses the file for the given path into CSV format (it is assumed the
+    file is a Santander .txt file).
+
+    :param iPath: The path to the input text file.
+    :param oPath: The path to the output csv file.
+    """
+    with open(iPath, "r", encoding="ISO-8859-1") as i, \
+         open(oPath, "w", encoding="UTF-8") as o:
+
+        # Replacing non-breaking space in Latin1 with a UTF-8 space
+        ls = i.readlines()
+        ls = [l.replace("\xa0", " ") for l in ls]
+
+        o.write(parse(ls))

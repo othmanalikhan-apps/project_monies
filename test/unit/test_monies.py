@@ -7,9 +7,15 @@ import unittest
 import monies.monies.monies as m
 
 
+def disabled(f):
+    def _decorator():
+        print(f.__name__ + ' has been disabled')
+    return _decorator
+
 
 class TestUnit(unittest.TestCase):
 
+    @disabled
     def testParse(self):
         data = ["From: 31/12/2011 to 31/12/2012\n",
                 "\n",
@@ -34,3 +40,15 @@ class TestUnit(unittest.TestCase):
 
         ############################## UNIT TESTS ##############################
 
+
+class TestIntegration(unittest.TestCase):
+
+    def testParseFile(self):
+        iPath = os.path.join("..", "res", "san_input.txt")
+        oPath = os.path.join("..", "res", "san_output.txt")
+        ePath = os.path.join("..", "res", "san_expected.txt")
+
+        m.parseFile(iPath, oPath)
+
+        if not filecmp.cmp(ePath, oPath, shallow=False):
+            self.fail("Files are not equal")

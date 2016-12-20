@@ -9,5 +9,5 @@ Balance: 3472.63 GBP
 
 Date: 29/12/2012
 Description: CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, RATE 1.00/GBP ON 26-12-2012
-Amount: -10.45 GBP
-Balance: 3472.63 GBP
+Amount: -10.45 	
+Balance: 3472.63 
