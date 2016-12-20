@@ -59,7 +59,7 @@ def parse(data):
 def parseFile(iPath, oPath):
     """
     Parses the file for the given path into CSV format (it is assumed the
-    file is a Santander .txt file).
+    file is a Santander .txt file with ISO-8859-1 encoding).
 
     :param iPath: The path to the input text file.
     :param oPath: The path to the output csv file.
