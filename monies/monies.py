@@ -22,14 +22,17 @@ def parse(data):
 
         <second_transaction_entry>
 
-    :param data: A string of the text file data.
-    :return: A parsed string in CSV format.
+    :param data: A list containing each line of the bank statement.
+    :return: A list containing parsed entries in CSV format.
     """
     sep = 5 * " "
-    csv = ""
 
-    data = list(filter(None, data))         # Removes empty lines
-    data = data[2:]                         # Skip headers
+    # Skip headers
+    data = data[4:]
+
+    # Remove empty lines
+    data = [d.strip() for d in data]
+    data = list(filter(None, data))
 
     # Removing field descriptions
     for i, d in enumerate(data):
@@ -46,12 +49,10 @@ def parse(data):
             data[i] = d.replace("Balance: ", "").replace(" GBP", "").strip()
 
     # Builds CSV string
-    for i, d in enumerate(data, start=1):
-        if i % 4 == 0:
-            csv = csv + d + "\n"
-        else:
-            csv = csv + d + sep
+    entries = [data[d:d+4] for d in range(0, len(data), 4)]
+    entries = [sep.join(e) for e in entries]
+    entries = "\n".join(entries)
 
-    return csv
+    return entries
 
 
