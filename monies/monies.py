@@ -7,7 +7,7 @@ better understand where it can be saved.
 
 def parse(data):
     """
-    Parses the input of the Santander .txt file into CSV format.
+    Parses the input of the Santander text file.
 
     The format of the bank statement is as follows:
 
@@ -22,38 +22,46 @@ def parse(data):
 
         <second_transaction_entry>
 
-    :param data: A list containing each line of the bank statement.
-    :return: A list containing parsed entries in CSV format.
-    """
-    sep = 5 * " "
+        <nth_transaction_entry>
 
-    # Skip headers
+    :param data: A list containing each line of the bank statement.
+    :return: A dictionary containing the parsed entries.
+    """
+    HEADER = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
+    parsed = {0: HEADER}
+
+    # Skip unnecessary headers
     data = data[4:]
 
     # Remove empty lines
     data = [d.strip() for d in data]
     data = list(filter(None, data))
 
-    # Removing field descriptions
-    for i, d in enumerate(data):
-        if d.startswith("Date"):
-            data[i] = d.replace("Date: ", "").strip()
+    # Creates sublist for each transaction
+    data = [data[d:d+4] for d in range(0, len(data), 4)]
 
-        if d.startswith("Description"):
-            data[i] = d.replace("Description: ", "").strip()
+    # Parsing into dictionary
+    for i, entry in enumerate(data, start=1):
+        parsed[i] = []
 
-        if d.startswith("Amount"):
-            data[i] = d.replace("Amount: ", "").replace(" GBP", "").strip()
+        # Removing field descriptors
+        for e in entry:
 
-        if d.startswith("Balance"):
-            data[i] = d.replace("Balance: ", "").replace(" GBP", "").strip()
+            if e.startswith("Date"):
+                e = e.replace("Date: ", "").strip()
 
-    # Builds CSV string
-    entries = [data[d:d+4] for d in range(0, len(data), 4)]
-    entries = [sep.join(e) for e in entries]
-    entries = "\n".join(entries)
+            if e.startswith("Description"):
+                e = e.replace("Description: ", "").strip()
 
-    return entries
+            if e.startswith("Amount"):
+                e = e.replace("Amount: ", "").replace(" GBP", "").strip()
+
+            if e.startswith("Balance"):
+                e = e.replace("Balance: ", "").replace(" GBP", "").strip()
+
+            parsed[i].append(e)
+
+    return parsed
 
 
 def parseFile(iPath, oPath):
@@ -72,3 +80,10 @@ def parseFile(iPath, oPath):
         ls = [l.replace("\xa0", " ") for l in ls]
 
         o.write(parse(ls))
+
+
+
+
+# iPath = os.path.join("..", "res", "ledgers", "2012.txt")
+# oPath = os.path.join("..", "res", "ledgers", "2012.csv")
+# parseFile(iPath, oPath)
