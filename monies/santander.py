@@ -1,7 +1,6 @@
 """
-A script responsible for parsing bank statement files, specifically for
-Santander text files, and visualising where the money is being used to
-better understand where it can be saved.
+A script responsible for parsing bank statement files from Santander. The
+files are text files with ISO-8859-1 encoding, written in a specific format.
 """
 import numpy as np
 

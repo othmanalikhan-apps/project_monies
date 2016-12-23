@@ -4,7 +4,7 @@ Unit and integration tests for the monies module.
 import os
 import filecmp
 import unittest
-import monies.monies.monies as m
+import monies.monies.santander as m
 
 
 def disabled(f):
