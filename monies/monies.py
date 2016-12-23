@@ -3,6 +3,7 @@ A script responsible for parsing bank statement files, specifically for
 Santander text files, and visualising where the money is being used to
 better understand where it can be saved.
 """
+import numpy as np
 
 
 def parse(data):
@@ -64,26 +65,29 @@ def parse(data):
     return parsed
 
 
-def parseFile(iPath, oPath):
+def toCSV(iPath, oPath):
     """
-    Parses the file for the given path into CSV format (it is assumed the
-    file is a Santander .txt file with ISO-8859-1 encoding).
+    Parses a text file (A Santander bank statement file encoded in ISO-8859-1
+    encoding) and converts it into an CSV file.
 
     :param iPath: The path to the input text file.
     :param oPath: The path to the output csv file.
     """
-    with open(iPath, "r", encoding="ISO-8859-1") as i, \
-         open(oPath, "w", encoding="UTF-8") as o:
+    with open(iPath, "r", encoding="ISO-8859-1") as inF, \
+            open(oPath, "wb") as outF:
 
         # Replacing non-breaking space in Latin1 with a UTF-8 space
-        ls = i.readlines()
+        ls = inF.readlines()
         ls = [l.replace("\xa0", " ") for l in ls]
 
-        o.write(parse(ls))
+        entries = [entry for i, entry in sorted(parse(ls).items())]
 
+        # Re-ordering columns
+        for i, entry in enumerate(entries):
+            date, desc, amount, balance = entry
+            entries[i] = [date, balance, amount, desc]
 
-
-
-# iPath = os.path.join("..", "res", "ledgers", "2012.txt")
-# oPath = os.path.join("..", "res", "ledgers", "2012.csv")
-# parseFile(iPath, oPath)
+        # Writing data using numpy
+        entries = np.array(entries)
+        dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
+        np.savetxt(outF, np.array(entries), fmt=dFormat)

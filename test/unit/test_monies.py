@@ -53,13 +53,12 @@ class TestUnit(unittest.TestCase):
 
 class TestIntegration(unittest.TestCase):
 
-    @disabled
-    def testParseFile(self):
+    def testToCSV(self):
         iPath = os.path.join("..", "res", "san_input.txt")
         oPath = os.path.join("..", "res", "san_output.txt")
         ePath = os.path.join("..", "res", "san_expected.txt")
 
-        m.parseFile(iPath, oPath)
+        m.toCSV(iPath, oPath)
 
         if not filecmp.cmp(ePath, oPath, shallow=False):
             self.fail("Files are not equal")
