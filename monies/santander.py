@@ -41,7 +41,7 @@ def parse(data):
         <nth_transaction_entry>
 
     :param data: A list containing each line of the bank statement.
-    :return: A dictionary mapping line numbers to data entries.
+    :return: A dictionary mapping line numbers to transaction entries.
     """
     HEADER = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
     parsed = {0: HEADER}
@@ -85,8 +85,8 @@ def swapColumns(entries):
     Changes the order of the columns that are stored in the dictionary (i.e.
     changes the order of the elements of the dictionary values which are lists).
 
-    :param entries: A dictionary mapping line numbers to data entries.
-    :return: A dictionary mapping line numbers to data entries.
+    :param entries: A dictionary mapping line numbers to transaction entries.
+    :return: A dictionary mapping line numbers to transaction entries.
     """
     for num, entry in entries.items():
         date, desc, amount, balance = entry
