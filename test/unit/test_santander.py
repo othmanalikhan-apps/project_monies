@@ -1,7 +1,7 @@
 import os
 import filecmp
 import unittest
-import monies.monies.santander as m
+import monies.monies.santander as san
 
 
 def disabled(f):
@@ -45,7 +45,7 @@ class TestUnit(unittest.TestCase):
                 "-10.00",
                 "3483.08"]
         }
-        self.assertEquals(m.parse(input), out)
+        self.assertEquals(san.parse(input), out)
 
 
 class TestIntegration(unittest.TestCase):
@@ -55,7 +55,7 @@ class TestIntegration(unittest.TestCase):
         oPath = os.path.join("..", "res", "san_output.txt")
         ePath = os.path.join("..", "res", "san_expected.txt")
 
-        m.toCSV(iPath, oPath)
+        san.toCSV(iPath, oPath)
 
         if not filecmp.cmp(ePath, oPath, shallow=False):
             self.fail("Files are not equal")
