@@ -13,7 +13,7 @@ class TestUnit(unittest.TestCase):
 
     def testParse(self):
 
-        input = \
+        inp = \
         [
         "From: 31/12/2011 to 31/12/2012\n",
         "\n",
@@ -44,11 +44,11 @@ class TestUnit(unittest.TestCase):
                 "-10.00",
                 "3483.08"]
         }
-        self.assertDictEqual(san.parse(input), out)
+        self.assertDictEqual(san.parse(inp), out)
 
     def testSwapColumns(self):
 
-        input = \
+        inp = \
         {
             0: ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"],
             1: ["29/12/2012",
@@ -78,7 +78,7 @@ class TestUnit(unittest.TestCase):
                 "RATE 1.00/GBP ON 26-12-2012"]
         }
 
-        self.assertDictEqual(san.swapColumns(input), out)
+        self.assertDictEqual(san.swapColumns(inp), out)
 
 
 class TestIntegration(unittest.TestCase):
