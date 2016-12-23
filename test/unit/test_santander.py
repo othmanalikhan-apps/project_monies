@@ -1,6 +1,3 @@
-"""
-Unit and integration tests for the monies module.
-"""
 import os
 import filecmp
 import unittest
