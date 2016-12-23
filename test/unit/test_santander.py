@@ -1,5 +1,4 @@
 import os
-import filecmp
 import unittest
 import monies.monies.santander as san
 
@@ -45,17 +44,67 @@ class TestUnit(unittest.TestCase):
                 "-10.00",
                 "3483.08"]
         }
-        self.assertEquals(san.parse(input), out)
+        self.assertDictEqual(san.parse(input), out)
+
+    def testSwapColumns(self):
+
+        input = \
+        {
+            0: ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"],
+            1: ["29/12/2012",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012",
+                "-10.45",
+                "3472.63"],
+            2: ["28/12/2012",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012",
+                "-10.00",
+                "3483.08"]
+        }
+
+        out = \
+        {
+            0: ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"],
+            1: ["29/12/2012",
+                "3472.63",
+                "-10.45",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"],
+            2: ["28/12/2012",
+                "3483.08",
+                "-10.00",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"]
+        }
+
+        self.assertDictEqual(san.swapColumns(input), out)
 
 
 class TestIntegration(unittest.TestCase):
 
-    def testToCSV(self):
+    def testParseSantanderFile(self):
         iPath = os.path.join("..", "res", "san_input.txt")
-        oPath = os.path.join("..", "res", "san_output.txt")
-        ePath = os.path.join("..", "res", "san_expected.txt")
 
-        san.toCSV(iPath, oPath)
+        data = san.readFile(iPath)
+        data = san.parse(data)
+        data = san.swapColumns(data)
 
-        if not filecmp.cmp(ePath, oPath, shallow=False):
-            self.fail("Files are not equal")
+        expected = \
+        {
+            0: ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"],
+            1: ["29/12/2012",
+                "3472.63",
+                "-10.45",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"],
+            2: ["29/12/2012",
+                "3472.63",
+                "-10.45",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"],
+        }
+
+        self.assertDictEqual(data, expected)
+
+

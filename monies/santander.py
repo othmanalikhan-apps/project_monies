@@ -1,8 +1,24 @@
 """
-A script responsible for parsing bank statement files from Santander. The
-files are text files with ISO-8859-1 encoding, written in a specific format.
+A script responsible for parsing bank statement files from Santander.
+
+The files are text files with ISO-8859-1 encoding written in a specific format.
 """
-import numpy as np
+
+
+def readFile(fPath):
+    """
+    Reads the Santander text file which is a bank statement file encoded in
+    ISO-8859-1.
+
+    :param fPath: The fPath to the input text file.
+    :return: A list containing all the lines of the file read correctly.
+    """
+    with open(fPath, "r", encoding="ISO-8859-1") as inF:
+
+        # Replacing non-breaking space in Latin1 with a UTF-8 space
+        ls = inF.readlines()
+        ls = [l.replace("\xa0", " ") for l in ls]
+        return ls
 
 
 def parse(data):
@@ -25,7 +41,7 @@ def parse(data):
         <nth_transaction_entry>
 
     :param data: A list containing each line of the bank statement.
-    :return: A dictionary containing the parsed entries.
+    :return: A dictionary mapping line numbers to data entries.
     """
     HEADER = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
     parsed = {0: HEADER}
@@ -64,29 +80,16 @@ def parse(data):
     return parsed
 
 
-def toCSV(iPath, oPath):
+def swapColumns(entries):
     """
-    Parses a text file (A Santander bank statement file encoded in ISO-8859-1
-    encoding) and converts it into an CSV file.
+    Changes the order of the columns that are stored in the dictionary (i.e.
+    changes the order of the elements of the dictionary values which are lists).
 
-    :param iPath: The path to the input text file.
-    :param oPath: The path to the output csv file.
+    :param entries: A dictionary mapping line numbers to data entries.
+    :return: A dictionary mapping line numbers to data entries.
     """
-    with open(iPath, "r", encoding="ISO-8859-1") as inF, \
-            open(oPath, "wb") as outF:
+    for num, entry in entries.items():
+        date, desc, amount, balance = entry
+        entries[num] = [date, balance, amount, desc]
 
-        # Replacing non-breaking space in Latin1 with a UTF-8 space
-        ls = inF.readlines()
-        ls = [l.replace("\xa0", " ") for l in ls]
-
-        entries = [entry for i, entry in sorted(parse(ls).items())]
-
-        # Re-ordering columns
-        for i, entry in enumerate(entries):
-            date, desc, amount, balance = entry
-            entries[i] = [date, balance, amount, desc]
-
-        # Writing data using numpy
-        entries = np.array(entries)
-        dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
-        np.savetxt(outF, np.array(entries), fmt=dFormat)
+    return entries
