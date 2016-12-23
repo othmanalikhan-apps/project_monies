@@ -1,7 +1,6 @@
 import os
 import filecmp
 import unittest
-
 import datetime
 
 import monies.monies.visualise as vis
@@ -68,15 +67,22 @@ class TestUnit(unittest.TestCase):
                 "-10.00",
                 "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
                 "RATE 1.00/GBP ON 26-12-2012"],
+            3: ["27/12/2012",
+                "3483.08",
+                "-14.00",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"],
+
         }
 
-        out = ([datetime.datetime(2012, 12, 29, 0, 0),
-                datetime.datetime(2012, 12, 28, 0, 0)],
-               [-10.45,
-                -10.00])
+        out = ((datetime.datetime(2012, 12, 27, 0, 0),
+                datetime.datetime(2012, 12, 28, 0, 0),
+                datetime.datetime(2012, 12, 29, 0, 0)),
+               (-14.00,
+                -10.00,
+                -10.45))
 
         self.assertTupleEqual(vis.preparePlotData(inp), out)
-
 
 
 class TestIntegration(unittest.TestCase):

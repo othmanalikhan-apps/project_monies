@@ -32,18 +32,19 @@ def preparePlotData(entries):
     directly using matplotlib functions.
 
     :param entries: A dictionary mapping line numbers to transaction entries.
-    :return: A tuple containing DATE and AMOUNT entries as lists.
+    :return: A tuple containing DATE and AMOUNT entries as tuples.
     """
-    dates = []
-    amounts = []
+    data = []
     entries.pop(0)      # Removes header
 
     for line, entry in entries.items():
         d, _, a, _ = entry
 
-        dates.append(datetime.datetime.strptime(d, "%d/%m/%Y"))
-        amounts.append(float(a))
+        point = (datetime.datetime.strptime(d, "%d/%m/%Y"), float(a))
+        data.append(point)
 
+    data = sorted(data, key=lambda x: x[0])     # Sorts based on dates
+    dates, amounts = zip(*data)
     return dates, amounts
 
 
@@ -62,3 +63,4 @@ def writeData(entries, fPath):
         entries = np.array(entries)
         dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
         np.savetxt(outF, np.array(entries), fmt=dFormat)
+
