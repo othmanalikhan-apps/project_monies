@@ -1,13 +1,14 @@
 """
 A script responsible for visualising money expenditure from bank statements.
 """
+import datetime
 import numpy as np
 
 
 def query(entries, keyWord):
     """
     Filters out entries that match the given 'contains' substring in the
-    description column.
+    DESCRIPTION column.
 
     :param entries: A dictionary mapping line numbers to transaction entries.
     :param keyWord: The substring that is searched in the description column.
@@ -23,6 +24,27 @@ def query(entries, keyWord):
             matches[line] = entry
 
     return matches
+
+
+def preparePlotData(entries):
+    """
+    Converts the given entries into a suitable form so that it can be plotted
+    directly using matplotlib functions.
+
+    :param entries: A dictionary mapping line numbers to transaction entries.
+    :return: A tuple containing DATE and AMOUNT entries as lists.
+    """
+    dates = []
+    amounts = []
+    entries.pop(0)      # Removes header
+
+    for line, entry in entries.items():
+        d, _, a, _ = entry
+
+        dates.append(datetime.datetime.strptime(d, "%d/%m/%Y"))
+        amounts.append(float(a))
+
+    return dates, amounts
 
 
 def writeData(entries, fPath):

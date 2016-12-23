@@ -1,6 +1,9 @@
 import os
 import filecmp
 import unittest
+
+import datetime
+
 import monies.monies.visualise as vis
 
 
@@ -49,6 +52,32 @@ class TestUnit(unittest.TestCase):
         }
 
         self.assertDictEqual(vis.query(inp, "JUST EAT"), out)
+
+    def testPreparePlotData(self):
+
+        inp = \
+        {
+            0: ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"],
+            1: ["29/12/2012",
+                "3472.63",
+                "-10.45",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"],
+            2: ["28/12/2012",
+                "3483.08",
+                "-10.00",
+                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+                "RATE 1.00/GBP ON 26-12-2012"],
+        }
+
+        out = ([datetime.datetime(2012, 12, 29, 0, 0),
+                datetime.datetime(2012, 12, 28, 0, 0)],
+               [-10.45,
+                -10.00])
+
+        self.assertTupleEqual(vis.preparePlotData(inp), out)
+
+
 
 class TestIntegration(unittest.TestCase):
 
