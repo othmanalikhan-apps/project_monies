@@ -48,6 +48,24 @@ def extractPlotData(entries):
     return dates, amounts
 
 
+def search(categories, entries):
+    """
+    Searches the entries for the given categories.
+
+    :param categories: A list of the form (Title, searchWord)
+    :param entries: A dictionary mapping line numbers to transaction entries.
+    :return: A list with entries as (title, dates, amounts) for each category.
+    """
+    found = []
+
+    for title, keyWord in categories:
+        dates, amounts = extractPlotData(query(entries, keyWord))
+        f = (title, dates, amounts)
+        found.append(f)
+
+    return found
+
+
 def write(entries, fPath):
     """
     Writes the given data which contains transaction entries into a text
