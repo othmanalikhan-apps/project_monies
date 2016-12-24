@@ -52,7 +52,7 @@ class TestUnit(unittest.TestCase):
 
         self.assertDictEqual(vis.query(inp, "JUST EAT"), out)
 
-    def testPreparePlotData(self):
+    def testExtractPlotData(self):
 
         inp = \
         {
@@ -82,7 +82,7 @@ class TestUnit(unittest.TestCase):
                 -10.00,
                 -10.45))
 
-        self.assertTupleEqual(vis.preparePlotData(inp), out)
+        self.assertTupleEqual(vis.extractPlotData(inp), out)
 
 
 class TestIntegration(unittest.TestCase):

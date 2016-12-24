@@ -26,7 +26,7 @@ def query(entries, keyWord):
     return matches
 
 
-def preparePlotData(entries):
+def extractPlotData(entries):
     """
     Converts the given entries into a suitable form so that it can be plotted
     directly using matplotlib functions.
@@ -63,4 +63,3 @@ def writeData(entries, fPath):
         entries = np.array(entries)
         dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
         np.savetxt(outF, np.array(entries), fmt=dFormat)
-
