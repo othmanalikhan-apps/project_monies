@@ -48,7 +48,7 @@ def extractPlotData(entries):
     return dates, amounts
 
 
-def writeData(entries, fPath):
+def write(entries, fPath):
     """
     Writes the given data which contains transaction entries into a text
     file in CSV format.

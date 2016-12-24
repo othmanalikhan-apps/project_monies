@@ -84,6 +84,8 @@ class TestUnit(unittest.TestCase):
 
         self.assertTupleEqual(vis.extractPlotData(inp), out)
 
+    def testSearch(self):
+        pass
 
 class TestIntegration(unittest.TestCase):
 
