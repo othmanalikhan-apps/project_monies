@@ -1,8 +1,12 @@
 """
 A script responsible for visualising money expenditure from bank statements.
 """
+import math
 import datetime
+
 import numpy as np
+from matplotlib import pyplot as plt
+from matplotlib import dates as mdates
 
 
 def query(entries, keyWord):
@@ -81,3 +85,66 @@ def write(entries, fPath):
         entries = np.array(entries)
         dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
         np.savetxt(outF, np.array(entries), fmt=dFormat)
+
+
+def plot(data):
+    """
+    Plots multiple subplots where each subplot corresponds to a expenditure
+    category (e.g. 'Food').
+
+    :param data: A list with entries as (title, dates, amounts) for each
+    category.
+    """
+    fig = plt.figure(figsize=(10, 10))
+    fig.canvas.set_window_title("Expense Visualiser")
+
+    rows = 2
+    cols = math.ceil(len(data) / rows)
+
+    # Formats both axis to be easier to read
+    def formatAxis(ax):
+        myFmt = mdates.DateFormatter('%b %d')
+        ax.xaxis.set_major_formatter(myFmt)
+
+        yLabels = ["£{:,.0f}".format(l) for l in ax.get_yticks()]
+        ax.set_yticklabels(yLabels)
+
+    for i, (title, dates, amounts) in enumerate(data, start=1):
+        ax = fig.add_subplot(cols, rows, i)
+        ax.set_title(title)
+        plt.xticks(rotation=45)
+
+        ax.plot(dates, amounts)
+        formatAxis(ax)
+
+    fig.tight_layout()
+    plt.show()
+
+
+def main():
+    """
+    Runs the script
+    """
+    import os
+    import monies.monies.santander as san
+
+    iPath = os.path.join("..", "res", "ledgers", "2015.txt")
+
+    categories = \
+    [
+        #(Title, KeyWord)
+        ("Food", "JUST EAT"),
+        ("Aramco", "ARAMCO"),
+        ("Paypal", "PAYPAL"),
+        ("Tesco", "TESCO"),
+        ("Misc", ""),
+    ]
+
+    entries = san.readFile(iPath)
+    entries = san.parse(entries)
+    entries = san.swapColumns(entries)
+    plot(search(categories, entries))
+
+
+if __name__ == "__main__":
+    main()

@@ -117,6 +117,7 @@ class TestUnit(unittest.TestCase):
 
         self.assertListEqual(vis.search(categories, entries), out)
 
+
 class TestIntegration(unittest.TestCase):
 
     def testWriteData(self):
