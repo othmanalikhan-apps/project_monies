@@ -87,10 +87,10 @@ def write(entries, fPath):
         np.savetxt(outF, np.array(entries), fmt=dFormat)
 
 
-def plot(data):
+def plotTimeGraph(data):
     """
-    Plots multiple subplots where each subplot corresponds to a expenditure
-    category (e.g. 'Food').
+    For each entry in the data, plots a time against money expenditure
+    graph. (e.g. A time vs money graph for 'Food')
 
     :param data: A list with entries as (title, dates, amounts) for each
     category.
