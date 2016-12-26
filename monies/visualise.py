@@ -98,9 +98,6 @@ def plot(data):
     fig = plt.figure(figsize=(10, 10))
     fig.canvas.set_window_title("Expense Visualiser")
 
-    rows = 2
-    cols = math.ceil(len(data) / rows)
-
     # Formats both axis to be easier to read
     def formatAxis(ax):
         myFmt = mdates.DateFormatter('%b %d')
@@ -109,12 +106,23 @@ def plot(data):
         yLabels = ["£{:,.0f}".format(l) for l in ax.get_yticks()]
         ax.set_yticklabels(yLabels)
 
+    # Settings subplots to be in a 2 x N grid
+    rows = 2
+    cols = math.ceil(len(data) / rows)
+
+    # Finding global max and min for x-axis
+    dss = [dates for _, dates, _ in data]
+    xMax = max([max(ds) for ds in dss])
+    xMin = min([min(ds) for ds in dss])
+
+    # Adds a plot per category
     for i, (title, dates, amounts) in enumerate(data, start=1):
         ax = fig.add_subplot(cols, rows, i)
         ax.set_title(title)
         plt.xticks(rotation=45)
 
-        ax.plot(dates, amounts)
+        ax.plot(dates, amounts, linewidth=2, c="red")
+        ax.set_xlim(xMin, xMax)
         formatAxis(ax)
 
     fig.tight_layout()
@@ -129,6 +137,7 @@ def main():
     import monies.monies.santander as san
 
     iPath = os.path.join("..", "res", "ledgers", "2015.txt")
+    #iPath = os.path.join("..", "res", "ledgers", "test.txt")
 
     categories = \
     [

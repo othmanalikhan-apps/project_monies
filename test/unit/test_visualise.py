@@ -141,5 +141,3 @@ class TestIntegration(unittest.TestCase):
 
         vis.write(data, oPath)
         self.assertTrue(filecmp.cmp(oPath, ePath))
-
-
