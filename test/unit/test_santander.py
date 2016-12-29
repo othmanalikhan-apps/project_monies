@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 import unittest
 import monies.monies.santander as san
 
@@ -30,21 +31,24 @@ class TestUnit(unittest.TestCase):
         "Balance: 3483.08 GBP"
         ]
 
-        out = \
-        {
-            0: ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"],
-            1: ["29/12/2012",
-                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-                "RATE 1.00/GBP ON 26-12-2012",
-                "-10.45",
-                "3472.63"],
-            2: ["28/12/2012",
-                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-                "RATE 1.00/GBP ON 26-12-2012",
-                "-10.00",
-                "3483.08"]
-        }
-        self.assertDictEqual(san.parse(inp), out)
+        HEADER = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
+        BODY = \
+        [
+            ["29/12/2012",
+            "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+            "RATE 1.00/GBP ON 26-12-2012",
+            "-10.45",
+            "3472.63"],
+            ["28/12/2012",
+            "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+            "RATE 1.00/GBP ON 26-12-2012",
+            "-10.00",
+            "3483.08"]
+        ]
+        out = pd.DataFrame(BODY, columns=HEADER)
+
+        if not out.equals(san.parse(inp)):
+            self.fail("The DataFrames are not equal!")
 
     def testSwapColumns(self):
 
