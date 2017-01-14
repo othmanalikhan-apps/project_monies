@@ -83,27 +83,28 @@ class TestUnit(unittest.TestCase):
 class TestIntegration(unittest.TestCase):
 
     def testParseSantanderFile(self):
+        header = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
+        body = \
+        [
+            ["29/12/2012",
+             "3472.63",
+             "-10.45",
+             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+             "RATE 1.00/GBP ON 26-12-2012"],
+            ["29/12/2012",
+             "3472.63",
+             "-10.45",
+             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+             "RATE 1.00/GBP ON 26-12-2012"],
+        ]
+        inp = pd.DataFrame(body, columns=header)
+
         iPath = os.path.join("..", "res", "san_input.txt")
+        out = san.readFile(iPath)
+        out = san.parse(out)
+        out = san.swapColumns(out)
 
-        data = san.readFile(iPath)
-        data = san.parse(data)
-        data = san.swapColumns(data)
-
-        expected = \
-        {
-            0: ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"],
-            1: ["29/12/2012",
-                "3472.63",
-                "-10.45",
-                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-                "RATE 1.00/GBP ON 26-12-2012"],
-            2: ["29/12/2012",
-                "3472.63",
-                "-10.45",
-                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-                "RATE 1.00/GBP ON 26-12-2012"],
-        }
-
-        self.assertDictEqual(data, expected)
-
-
+        if not out.equals(inp):
+            self.fail("The DataFrames are not equal!\n"
+                      "Expected Header: {}\n"
+                      "Actual Header: {}\n".format(inp.columns, out.columns))
