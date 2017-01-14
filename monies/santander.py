@@ -42,7 +42,7 @@ def parse(data):
         <nth_transaction_entry>
 
     :param data: A list containing each line of the bank statement.
-    :return: A pandas DataFrame object containing the parsed data.
+    :return: A pandas DataFrame.
     """
     HEADER = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
     parsed = []
@@ -85,14 +85,13 @@ def parse(data):
 
 def swapColumns(entries):
     """
-    Changes the order of the columns that are stored in the dictionary (i.e.
-    changes the order of the elements of the dictionary values which are lists).
+    Changes the order of the columns that are stored in the given panadas
+    object (usually to increase human readability of output).
 
-    :param entries: A dictionary mapping line numbers to transaction entries.
+    :param entries: A pandas DataFrame.
     :return: A dictionary mapping line numbers to transaction entries.
     """
-    for num, entry in entries.items():
-        date, desc, amount, balance = entry
-        entries[num] = [date, balance, amount, desc]
-
+    cols = entries.columns.tolist()
+    swapped = [cols[0], cols[3], cols[2], cols[1]]
+    entries = entries[swapped]
     return entries

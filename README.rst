@@ -26,3 +26,5 @@ Othman Alikhan, oz.alikhan@gmail.com
 TODO
 ====
 - Let script run only on text files within the same directory for ease of use
+- Use Pandas data framework throughout
+- Potentially use ggplot wrapper to matplotlib for aesthetic appeal
