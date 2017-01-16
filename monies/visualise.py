@@ -5,29 +5,21 @@ import math
 import datetime
 
 import numpy as np
+import pandas as pd
 from matplotlib import pyplot as plt
 from matplotlib import dates as mdates
 
 
 def query(entries, keyWord):
     """
-    Filters out entries that match the given 'contains' substring in the
-    DESCRIPTION column.
+    Filters out entries that match the given substring in the DESCRIPTION
+    column.
 
-    :param entries: A dictionary mapping line numbers to transaction entries.
+    :param entries: A pandas Dataframe containing transaction entries.
     :param keyWord: The substring that is searched in the description column.
-    :return: A dictionary mapping line numbers to transaction entries.
+    :return: A pandas Dataframe containing matched transaction entries only.
     """
-    HEADER = entries[0]
-    matches = {0: HEADER}
-
-    for line, entry in entries.items():
-        _, _, _, desc = entry
-
-        if desc.find(keyWord) != -1:
-            matches[line] = entry
-
-    return matches
+    return entries[entries["DESCRIPTION"].str.contains(keyWord, na=False)]
 
 
 def extractPlotData(entries):
@@ -152,7 +144,7 @@ def main():
     entries = san.readFile(iPath)
     entries = san.parse(entries)
     entries = san.swapColumns(entries)
-    plot(search(categories, entries))
+    plotTimeGraph(search(categories, entries))
 
 
 if __name__ == "__main__":
