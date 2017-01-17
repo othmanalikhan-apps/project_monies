@@ -93,26 +93,24 @@ class TestUnit(unittest.TestCase):
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"],
         ]
-        return [("JUST EAT", pd.DataFrame(body, columns=header))]
+        return [("Food", pd.DataFrame(body, columns=header))]
 
     def testQuery(self):
         exp = self.dfQuery
         out = vis.query(self.dfInp, "JUST EAT")
 
-        if not out.equals(exp):
-            self.fail("EXPECTED:\n{}\n\n\n"
-                      "ACTUAL:\n{}\n\n\n".format(exp, out))
+        self._assertDataFrames(exp, out)
 
-    #TODO: BROKEN, NEEDS FIXING
-    @disabled
-    def testSearch(self):
-        categories = [("Food", "JUST EAT")]
+    def testCategorise(self):
+        exp = self.dfCategories
+        out = vis.categorise(self.dfInp, [("Food", "JUST EAT")])
 
-        exp = self.dfQuery
-        out = vis.query(self.dfInp, "JUST EAT")
+        for i in range(max(len(out), len(exp))):
+            _, dfOut = out[i]
+            _, dfExp = exp[i]
+            self._assertDataFrames(dfExp, dfOut)
 
-        self.assertListEqual(vis.search(categories, entries), out)
-
+    def _assertDataFrames(self, exp, out):
         if not out.equals(exp):
             self.fail("EXPECTED:\n{}\n\n\n"
                       "ACTUAL:\n{}\n\n\n".format(exp, out))

@@ -20,29 +20,25 @@ def query(entries, keyWord):
     """
     return entries[entries["DESCRIPTION"].str.contains(keyWord, na=False)]
 
-
-def search(categories, entries):
+def categorise(entries, categories):
     """
-    Searches the entries for the given categories.
+    For the given categories, searches the entries and categorises the
+    results.
 
-    :param categories: A list of the form (Title, searchWord)
-    :param entries: A dictionary mapping line numbers to transaction entries.
-    :return: A list with entries as (title, dates, amounts) for each category.
+    :param entries: A pandas Dataframe containing transaction entries.
+    :param categories: A list with entries as (Title, searchWord),
+    indicating categories to be searched.
+    :return: A list containing DataFrame objects for each searched category.
     """
-    found = []
-
-    for title, keyWord in categories:
-        dates, amounts = extractPlotData(query(entries, keyWord))
-        f = (title, dates, amounts)
-        found.append(f)
-
+    found = [(title, query(entries, keyWord)) for title, keyWord in categories]
     return found
 
-
-def plotTimeGraph(data):
+# TODO: Fix broken function
+def plotTimeGraph(entries):
     """
-    For each entry in the data, plots a time against money expenditure
-    graph. (e.g. A time vs money graph for 'Food')
+    For each entry, plots a time against money expenditure graph.
+
+    For instance, this method can plot time vs money graph for 'Food')
 
     :param data: A list with entries as (title, dates, amounts) for each
     category.
@@ -121,7 +117,9 @@ def main():
     entries = san.readFile(iPath)
     entries = san.parse(entries)
     entries = san.swapColumns(entries)
-    plotTimeGraph(search(categories, entries))
+
+    categorise(entries, categories)
+    #plotTimeGraph(categories(categories, entries))
 
 
 if __name__ == "__main__":
