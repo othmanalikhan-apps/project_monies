@@ -16,8 +16,13 @@ def disabled(f):
 class TestUnit(unittest.TestCase):
 
     def setUp(self):
-
         header = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
+        self.dfInp = self.setupDefault(header)
+        self.dfQuery = self.setupQuery(header)
+        self.dfPlot = self.setupPlot(header)
+        self.dfCategories = self.setupCategorise(header)
+
+    def setupDefault(self, header):
         body = \
         [
             ["29/12/2012",
@@ -35,8 +40,10 @@ class TestUnit(unittest.TestCase):
              "23.00",
              "CARD PAYMENT TO WWW.UCAS.COM,23.00 GBP, RATE 1.00/GBP ON "]
         ]
+        return pd.DataFrame(body, columns=header)
 
-        queryBody = \
+    def setupQuery(self, header):
+        body = \
         [
             ["29/12/2012",
              "3472.63",
@@ -49,10 +56,11 @@ class TestUnit(unittest.TestCase):
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"],
         ]
+        return pd.DataFrame(body, columns=header)
 
-        plotBody = \
+    def setupPlot(self, header):
+        body = \
         [
-            ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"],
             ["29/12/2012",
              "3472.63",
              "-10.45",
@@ -69,20 +77,23 @@ class TestUnit(unittest.TestCase):
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"],
         ]
+        return pd.DataFrame(body, columns=header)
 
-        self.PlotData = \
-        (
-            (datetime.datetime(2012, 12, 27, 0, 0),
-             datetime.datetime(2012, 12, 28, 0, 0),
-             datetime.datetime(2012, 12, 29, 0, 0)),
-            (-14.00,
-             -10.00,
-             -10.45)
-        )
-
-        self.dfInp = pd.DataFrame(body, columns=header)
-        self.dfQuery = pd.DataFrame(queryBody, columns=header)
-        self.dfPlot = pd.DataFrame(plotBody, columns=header)
+    def setupCategorise(self, header):
+        body = \
+        [
+            ["29/12/2012",
+             "3472.63",
+             "-10.45",
+             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+             "RATE 1.00/GBP ON 26-12-2012"],
+            ["28/12/2012",
+             "3483.08",
+             "-10.00",
+             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
+             "RATE 1.00/GBP ON 26-12-2012"],
+        ]
+        return [("JUST EAT", pd.DataFrame(body, columns=header))]
 
     def testQuery(self):
         exp = self.dfQuery
@@ -92,40 +103,20 @@ class TestUnit(unittest.TestCase):
             self.fail("EXPECTED:\n{}\n\n\n"
                       "ACTUAL:\n{}\n\n\n".format(exp, out))
 
+    #TODO: BROKEN, NEEDS FIXING
     @disabled
     def testSearch(self):
-
-        entries = \
-        {
-            0: ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"],
-            1: ["29/12/2012",
-                "3472.63",
-                "-10.45",
-                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-                "RATE 1.00/GBP ON 26-12-2012"],
-            2: ["28/12/2012",
-                "3483.08",
-                "-10.00",
-                "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-                "RATE 1.00/GBP ON 26-12-2012"],
-            3: ["28/12/2011",
-                "1344.08",
-                "23.00",
-                "CARD PAYMENT TO WWW.UCAS.COM,23.00 GBP, RATE 1.00/GBP ON "]
-        }
-
         categories = [("Food", "JUST EAT")]
 
-        out = \
-        [
-            ("Food",
-             (datetime.datetime(2012, 12, 28, 0, 0),
-              datetime.datetime(2012, 12, 29, 0, 0)),
-             (-10.00,
-              -10.45))
-        ]
+        exp = self.dfQuery
+        out = vis.query(self.dfInp, "JUST EAT")
 
         self.assertListEqual(vis.search(categories, entries), out)
+
+        if not out.equals(exp):
+            self.fail("EXPECTED:\n{}\n\n\n"
+                      "ACTUAL:\n{}\n\n\n".format(exp, out))
+
 
 
 class TestIntegration(unittest.TestCase):
