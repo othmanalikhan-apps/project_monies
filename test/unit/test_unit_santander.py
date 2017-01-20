@@ -1,16 +1,9 @@
-import os
 import pandas as pd
 import unittest
 import monies.monies.santander as san
 
 
-def disabled(f):
-    def _decorator():
-        print(f.__name__ + ' has been disabled')
-    return _decorator
-
-
-class TestUnit(unittest.TestCase):
+class SantanderUnit(unittest.TestCase):
 
     def setUp(self):
         self.rawData = \
@@ -73,36 +66,6 @@ class TestUnit(unittest.TestCase):
     def testSwapColumns(self):
         inp = san.swapColumns(self.dfParsed)
         out = self.dfSwapped
-
-        if not out.equals(inp):
-            self.fail("The DataFrames are not equal!\n"
-                      "Expected Header: {}\n"
-                      "Actual Header: {}\n".format(inp.columns, out.columns))
-
-
-class TestIntegration(unittest.TestCase):
-
-    def testParseSantanderFile(self):
-        header = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
-        body = \
-        [
-            ["29/12/2012",
-             "3472.63",
-             "-10.45",
-             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-             "RATE 1.00/GBP ON 26-12-2012"],
-            ["29/12/2012",
-             "3472.63",
-             "-10.45",
-             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-             "RATE 1.00/GBP ON 26-12-2012"],
-        ]
-        inp = pd.DataFrame(body, columns=header)
-
-        iPath = os.path.join("..", "res", "san_input.txt")
-        out = san.readFile(iPath)
-        out = san.parse(out)
-        out = san.swapColumns(out)
 
         if not out.equals(inp):
             self.fail("The DataFrames are not equal!\n"
