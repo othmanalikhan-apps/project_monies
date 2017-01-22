@@ -1,12 +1,9 @@
 """
 A script responsible for visualising money expenditure from bank statements.
 """
-import math
-
+import datetime
+import pygal
 import numpy as np
-import pandas as pd
-from matplotlib import pyplot as plt
-from matplotlib import dates as mdates
 
 
 def query(entries, keyWord):
@@ -20,61 +17,64 @@ def query(entries, keyWord):
     """
     return entries[entries["DESCRIPTION"].str.contains(keyWord, na=False)]
 
+
 def categorise(entries, categories):
     """
-    For the given categories, searches the entries and categorises the
-    results.
+    For each category, queries the entries and then stores the preferred
+    title of the query and its data.
 
     :param entries: A pandas Dataframe containing transaction entries.
     :param categories: A list with entries as (Title, searchWord),
     indicating categories to be searched.
-    :return: A list containing DataFrame objects for each searched category.
+    :return: A list containing the preferred title and DataFrame object for
+    each searched category.
     """
     found = [(title, query(entries, keyWord)) for title, keyWord in categories]
     return found
 
-# TODO: Fix broken function
-def plotTimeGraph(entries):
+
+def sliceMonthly():
+    pass
+
+
+# TODO: WORKING ! ! !
+# Time (over several months) vs instantaneous expenditure
+# Time (over several months) vs cumulative expenditure
+
+# Time (month) vs instantaneous expenditure
+# Time (month) vs cumulative expenditure
+
+# Bar chart of cumulative expenditure (every month) of a certain category
+
+# Compare monthly data for specific categories (e.g. Just Eat in Month 1 vs
+# Just Eat in Month 2) and find month with the least spent amount
+def plotTimeGraph(data):
     """
     For each entry, plots a time against money expenditure graph.
 
     For instance, this method can plot time vs money graph for 'Food')
 
-    :param data: A list with entries as (title, dates, amounts) for each
-    category.
+    :param data: A list containing the title and DataFrame object for each
+    searched category.
     """
-    fig = plt.figure(figsize=(10, 10))
-    fig.canvas.set_window_title("Expense Visualiser")
 
-    # Formats both axis to be easier to read
-    def formatAxis(ax):
-        myFmt = mdates.DateFormatter('%b %d')
-        ax.xaxis.set_major_formatter(myFmt)
+    config = pygal.Config()
+    config.human_readable = True
 
-        yLabels = ["£{:,.0f}".format(l) for l in ax.get_yticks()]
-        ax.set_yticklabels(yLabels)
+    plot = pygal.DateTimeLine(config)
 
-    # Settings subplots to be in a 2 x N grid
-    rows = 2
-    cols = math.ceil(len(data) / rows)
+    for title, df in data:
+        plotData = []
 
-    # Finding global max and min for x-axis
-    dss = [dates for _, dates, _ in data]
-    xMax = max([max(ds) for ds in dss])
-    xMin = min([min(ds) for ds in dss])
+        for i, row in df.iterrows():
+            d = datetime.datetime.strptime(row["DATE"], "%d/%m/%Y")
+            b = float(row["AMOUNT"])
+            plotData.append((d, b))
 
-    # Adds a plot per category
-    for i, (title, dates, amounts) in enumerate(data, start=1):
-        ax = fig.add_subplot(cols, rows, i)
-        ax.set_title(title)
-        plt.xticks(rotation=45)
+        plotData = sorted(plotData)
+        plot.add(title, plotData)
 
-        ax.plot(dates, amounts, linewidth=2, c="red")
-        ax.set_xlim(xMin, xMax)
-        formatAxis(ax)
-
-    fig.tight_layout()
-    plt.show()
+    plot.render_to_file('bar_chart.svg')  # Save the svg to a file
 
 
 def write(entries, fPath):
@@ -92,6 +92,7 @@ def write(entries, fPath):
         entries = np.array(entries)
         dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
         np.savetxt(outF, np.array(entries), fmt=dFormat)
+
 
 
 def main():
@@ -118,8 +119,8 @@ def main():
     entries = san.parse(entries)
     entries = san.swapColumns(entries)
 
-    categorise(entries, categories)
-    #plotTimeGraph(categories(categories, entries))
+    plotData = categorise(entries, categories)
+    plotTimeGraph(plotData)
 
 
 if __name__ == "__main__":
