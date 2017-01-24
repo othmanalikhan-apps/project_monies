@@ -44,8 +44,10 @@ def parse(data):
     :param data: A list containing each line of the bank statement.
     :return: A pandas DataFrame.
     """
-    HEADER = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
-    parsed = []
+    dates = []
+    descs = []
+    amounts = []
+    balances = []
 
     # Skip unnecessary headers
     data = data[4:]
@@ -57,29 +59,30 @@ def parse(data):
     # Creates sublist for each transaction
     data = [data[d:d+4] for d in range(0, len(data), 4)]
 
-    # Parsing into dictionary
-    for i, entry in enumerate(data, start=1):
-
+    # Parsing data into a 2D list
+    for entry in data:
         # Removing field descriptors
-        p = []
         for e in entry:
 
             if e.startswith("Date"):
-                e = e.replace("Date: ", "").strip()
+                dates.append(e.replace("Date: ", "").strip())
 
             if e.startswith("Description"):
-                e = e.replace("Description: ", "").strip()
+                descs.append(e.replace("Description: ", "").strip())
 
             if e.startswith("Amount"):
-                e = e.replace("Amount: ", "").replace(" GBP", "").strip()
+                amounts.append(e.replace("Amount: ", "")
+                                .replace(" GBP", "").strip())
 
             if e.startswith("Balance"):
-                e = e.replace("Balance: ", "").replace(" GBP", "").strip()
+                balances.append(e.replace("Balance: ", "")
+                                 .replace(" GBP", "").strip())
 
-            p.append(e)
-        parsed.append(p)
-
-    parsed = pd.DataFrame(parsed, columns=HEADER)
+    # Stores data in a Pandas data container
+    parsed = pd.DataFrame({"DATES": dates,
+                           "DESCRIPTION": descs,
+                           "AMOUNT": amounts,
+                           "BALANCE": balances})
     return parsed
 
 
