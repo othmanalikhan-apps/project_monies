@@ -1,5 +1,8 @@
-import pandas as pd
 import unittest
+
+import pandas as pd
+from pandas.util.testing import assert_frame_equal
+
 import monies.monies.santander as san
 
 
@@ -23,23 +26,8 @@ class SantanderUnit(unittest.TestCase):
             "Balance: 3483.08 GBP"
         ]
 
-        pHeader = ["DATE", "DESCRIPTION", "AMOUNT", "BALANCE"]
+        pHeader = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
         parsedBody = \
-        [
-            ["29/12/2012",
-             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-             "RATE 1.00/GBP ON 26-12-2012",
-             "-10.45",
-             "3472.63"],
-            ["28/12/2012",
-             "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
-             "RATE 1.00/GBP ON 26-12-2012",
-             "-10.00",
-             "3483.08"]
-        ]
-
-        sHeader = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
-        swappedBody = \
         [
             ["29/12/2012",
              "3472.63",
@@ -54,20 +42,8 @@ class SantanderUnit(unittest.TestCase):
         ]
 
         self.dfParsed = pd.DataFrame(parsedBody, columns=pHeader)
-        self.dfSwapped = pd.DataFrame(swappedBody, columns=sHeader)
 
     def testParse(self):
         inp = san.parse(self.rawData)
         out = self.dfParsed
-
-        if not out.equals(inp):
-            self.fail("The DataFrames are not equal!")
-
-    def testSwapColumns(self):
-        inp = san.swapColumns(self.dfParsed)
-        out = self.dfSwapped
-
-        if not out.equals(inp):
-            self.fail("The DataFrames are not equal!\n"
-                      "Expected Header: {}\n"
-                      "Actual Header: {}\n".format(inp.columns, out.columns))
+        assert_frame_equal(inp, out)

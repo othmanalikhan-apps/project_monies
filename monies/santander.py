@@ -79,22 +79,6 @@ def parse(data):
                                  .replace(" GBP", "").strip())
 
     # Stores data in a Pandas data container
-    parsed = pd.DataFrame({"DATES": dates,
-                           "DESCRIPTION": descs,
-                           "AMOUNT": amounts,
-                           "BALANCE": balances})
+    parsed = pd.DataFrame(list(zip(dates, balances, amounts, descs)),
+                          columns=["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"])
     return parsed
-
-
-def swapColumns(entries):
-    """
-    Changes the order of the columns that are stored in the given panadas
-    object (usually to increase human readability of output).
-
-    :param entries: A pandas DataFrame.
-    :return: A dictionary mapping line numbers to transaction entries.
-    """
-    cols = entries.columns.tolist()
-    swapped = [cols[0], cols[3], cols[2], cols[1]]
-    entries = entries[swapped]
-    return entries
