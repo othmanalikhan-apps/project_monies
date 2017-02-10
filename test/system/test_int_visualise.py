@@ -4,6 +4,7 @@ import unittest
 import monies.monies.visualise as vis
 
 
+# Declaring paths
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(THIS_DIR, "res")
 

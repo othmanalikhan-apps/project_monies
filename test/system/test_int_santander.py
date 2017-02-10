@@ -4,6 +4,7 @@ import unittest
 import monies.monies.santander as san
 
 
+# Declaring test resource path
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_PATH = os.path.join(THIS_DIR, "res")
 

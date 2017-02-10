@@ -1,6 +1,17 @@
 import unittest
+import datetime as dt
+
+import numpy as np
 import pandas as pd
+from pandas.util.testing import assert_frame_equal
+
 import monies.monies.visualise as vis
+
+
+def disabled(func):
+    def _wrapper(f):
+        print(str(f) + " test is disabled!")
+    return _wrapper(func)
 
 
 class VisualiseUnit(unittest.TestCase):
@@ -99,6 +110,29 @@ class VisualiseUnit(unittest.TestCase):
             _, dfOut = out[i]
             _, dfExp = exp[i]
             self._assertDataFrames(dfExp, dfOut)
+
+    def testSliceMonthly(self):
+
+        def _generateMonthData(month):
+            days = pd.date_range(dt.datetime(2015, month+1, 1),
+                                 dt.datetime(2015, month, 1))
+            data = np.random.rand(len(days))
+            month = pd.DataFrame({"BALANCE": data,
+                                  "AMOUNT": data,
+                                  "DESCRIPTION": data},
+                                 index=days)
+            return month
+
+        jan = _generateMonthData(1)
+        feb = _generateMonthData(2)
+        mar = _generateMonthData(3)
+        allMonths = jan + feb + mar
+
+        months = vis.sliceMonthly(allMonths)
+
+        assert_frame_equal(months[0], jan)
+        assert_frame_equal(months[1], feb)
+        assert_frame_equal(months[2], mar)
 
     def _assertDataFrames(self, exp, out):
         if not out.equals(exp):

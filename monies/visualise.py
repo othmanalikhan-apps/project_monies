@@ -33,12 +33,14 @@ def categorise(entries, categories):
     return found
 
 
-# TODO: WORKING
-# Code slice monthly so that it can be used to plot Bar Chart
-def sliceMonthly(x):
-    #df.loc[df.index.month==2]
-    pass
-    return [1, 2, 3]
+def sliceMonthly(df):
+    """
+    Slices the given DataFrame whose index contains dates into monthly chunks.
+
+    :param df: A pandas DataFrame object that contains transaction information.
+    :return: A list of DataFrame objects that contain monthly transactions.
+    """
+    return [df.loc[df.index.month == m] for m in range(1, 13)]
 
 
 # TODO: WORKING
