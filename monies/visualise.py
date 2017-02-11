@@ -43,7 +43,8 @@ def sliceMonthly(df):
     return [df.loc[df.index.month == m] for m in range(1, 13)]
 
 
-# TODO: WORKING
+# TODO: WORKING ! ! !
+# Appliny sliceMonthly to bar chart so that it _actually_ bar charts
 # Bar chart for all categories, over all months
 def plotMonthlyBar(data):
     """
@@ -103,7 +104,8 @@ def plotBalanceVsTime(data):
     for title, df in data:
         plot.add(title, sorted(prepareDFPlot(df)))
 
-    plot.render_to_file('bar_chart.svg')  # Save the svg to a file
+    # Save the plot to a file
+    plot.render_to_file('balance_vs_time.svg')
 
 
 #TODO: Change so that it writes categories (i.e. filename = category + date)
@@ -151,6 +153,7 @@ def main():
     entries.to_csv()
 
     plotData = categorise(entries, categories)
+    # plotMonthlyBar(plotData)
     plotBalanceVsTime(plotData)
 
 
