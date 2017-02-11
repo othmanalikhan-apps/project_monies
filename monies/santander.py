@@ -84,5 +84,4 @@ def parse(data):
     parsed = pd.DataFrame(list(zip(balances, amounts, descs)),
                           columns=["BALANCE", "AMOUNT", "DESCRIPTION"],
                           index=dates)
-    print(parsed.dtypes)
     return parsed
