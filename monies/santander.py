@@ -73,12 +73,12 @@ def parse(data):
                 descs.append(e.replace("Description: ", "").strip())
 
             if e.startswith("Amount"):
-                amounts.append(e.replace("Amount: ", "")
-                                .replace(" GBP", "").strip())
+                e = e.replace("Amount: ", "").replace(" GBP", "").strip()
+                amounts.append(float(e))
 
             if e.startswith("Balance"):
-                balances.append(e.replace("Balance: ", "")
-                                 .replace(" GBP", "").strip())
+                e = e.replace("Balance: ", "").replace(" GBP", "").strip()
+                balances.append(float(e))
 
     # Stores data in a Pandas data container
     parsed = pd.DataFrame(list(zip(balances, amounts, descs)),
