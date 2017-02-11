@@ -3,6 +3,7 @@ A script responsible for parsing bank statement files from Santander.
 
 The files are text files with ISO-8859-1 encoding written in a specific format.
 """
+import datetime
 import pandas as pd
 
 
@@ -65,7 +66,8 @@ def parse(data):
         for e in entry:
 
             if e.startswith("Date"):
-                dates.append(e.replace("Date: ", "").strip())
+                e = e.replace("Date: ", "").strip()
+                dates.append(datetime.datetime.strptime(e, "%d/%m/%Y"))
 
             if e.startswith("Description"):
                 descs.append(e.replace("Description: ", "").strip())
@@ -79,6 +81,8 @@ def parse(data):
                                  .replace(" GBP", "").strip())
 
     # Stores data in a Pandas data container
-    parsed = pd.DataFrame(list(zip(dates, balances, amounts, descs)),
-                          columns=["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"])
+    parsed = pd.DataFrame(list(zip(balances, amounts, descs)),
+                          columns=["BALANCE", "AMOUNT", "DESCRIPTION"],
+                          index=dates)
+    print(parsed.dtypes)
     return parsed
