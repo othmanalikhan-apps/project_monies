@@ -1,9 +1,12 @@
 """
 A script responsible for visualising money expenditure from bank statements.
 """
+import os
 import datetime
-import pygal
 import numpy as np
+import pygal
+
+from pygal import style
 
 
 def query(entries, keyWord):
@@ -43,10 +46,7 @@ def sliceMonthly(df):
     return [df.loc[df.index.month == m] for m in range(1, 13)]
 
 
-# TODO: WORKING ! ! !
-# Appliny sliceMonthly to bar chart so that it _actually_ bar charts
-# Bar chart for all categories, over all months
-def plotMonthlyBar(data):
+def plotMonthlyBarChart(data, outDir):
     """
     For each entry, plots a time against money expenditure graph.
 
@@ -54,25 +54,31 @@ def plotMonthlyBar(data):
 
     :param data: A list containing the title and DataFrame object for each
     searched category.
+    :param outDir: The output directory to store the generated plot file.
     """
-
+    # Initialising beautiful plot format
     config = pygal.Config()
+    config.style = pygal.style.BlueStyle
     config.human_readable = True
+    config.legend_at_bottom = True
+    config.value_formatter = lambda y: "{:.0f} GBP".format(y)
+    config.x_labels = ["Jan", "Feb", "Mar", "Apr", "May", "June",
+                       "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    config.title = "Monthly Expense Breakdown"
 
     plot = pygal.Bar(config)
 
+    # Preparing all data frames for plotting
     for title, df in data:
-        plotData = []
+        dfs = sliceMonthly(df)
+        balances = [sum(df["AMOUNT"]) for df in dfs]
+        plot.add(title, balances)
 
-        for i, row in df.iterrows():
-            d = datetime.datetime.strptime(row["DATE"], "%d/%m/%Y")
-            b = float(row["AMOUNT"])
-            plotData.append((d, b))
+    # Adds spacing between bars (hacky solution as no alternatives found)
+    plot.add("Space", len(config.x_labels)*[])
 
-        plotData = sorted(plotData)
-        plot.add(title, plotData)
-
-    plot.render_to_file('bar_chart.svg')  # Save the svg to a file
+    # Save the plot to a file
+    plot.render_to_file(os.path.join(outDir, 'monthly_bar_chart.svg'))
 
 
 def plotBalanceVsTime(data):
@@ -137,6 +143,7 @@ def main():
     iPath = os.path.join("..", "res", "ledgers", "2015.txt")
     oPath = os.path.join("..", "res", "ledgers", "2015_output.txt")
     #iPath = os.path.join("..", "res", "ledgers", "test.txt")
+    oDir = os.path.join("..", "res", "output")
 
     categories = \
     [
@@ -153,8 +160,8 @@ def main():
     entries.to_csv()
 
     plotData = categorise(entries, categories)
-    # plotMonthlyBar(plotData)
-    plotBalanceVsTime(plotData)
+    plotMonthlyBarChart(plotData, oDir)
+    # plotBalanceVsTime(plotData)
 
 
 if __name__ == "__main__":
