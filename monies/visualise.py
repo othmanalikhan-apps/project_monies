@@ -123,6 +123,7 @@ def main():
     iPath = os.path.join("..", "res", "ledgers", "2015.txt")
     oDir = os.path.join("..", "res", "output")
 
+    # Specify keywords to be searched in the bank statement
     categories = \
     [
         # (Title, KeyWord)
@@ -134,10 +135,12 @@ def main():
         # ("Misc", ""),
     ]
 
+    # Reading data
     entries = san.readFile(iPath)
     entries = san.parse(entries)                        # Santander files only
     entries.to_csv(os.path.join(oDir, "output.csv"))    # Saving CSV output
 
+    # Plotting data
     plotData = categorise(entries, categories)
     plotMonthlyBarChart(plotData, oDir)
     plotBalanceVsTime(plotData, oDir)
