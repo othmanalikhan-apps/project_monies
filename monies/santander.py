@@ -81,7 +81,9 @@ def parse(data):
                 balances.append(float(e))
 
     # Stores data in a Pandas data container
-    parsed = pd.DataFrame(list(zip(balances, amounts, descs)),
-                          columns=["BALANCE", "AMOUNT", "DESCRIPTION"],
-                          index=dates)
+    data = list(zip(dates, balances, amounts, descs))
+    cols = ["DATES", "BALANCE", "AMOUNT", "DESCRIPTION"]
+    parsed = pd.DataFrame(data, columns=cols)
+    parsed.set_index("DATES")
+
     return parsed

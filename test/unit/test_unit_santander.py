@@ -1,4 +1,5 @@
 import unittest
+import datetime
 
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
@@ -26,17 +27,17 @@ class SantanderUnit(unittest.TestCase):
             "Balance: 3483.08 GBP"
         ]
 
-        pHeader = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
+        pHeader = ["DATES", "BALANCE", "AMOUNT", "DESCRIPTION"]
         parsedBody = \
         [
-            ["29/12/2012",
-             "3472.63",
-             "-10.45",
+            [datetime.datetime(2012, 12, 29),
+             3472.63,
+             -10.45,
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"],
-            ["28/12/2012",
-             "3483.08",
-             "-10.00",
+            [datetime.datetime(2012, 12, 28),
+             3483.08,
+             -10.00,
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"]
         ]
