@@ -83,7 +83,6 @@ def parse(data):
     # Stores data in a Pandas data container
     data = list(zip(dates, balances, amounts, descs))
     cols = ["DATES", "BALANCE", "AMOUNT", "DESCRIPTION"]
-    parsed = pd.DataFrame(data, columns=cols)
-    parsed.set_index("DATES")
+    parsed = pd.DataFrame(data, columns=cols, index=dates)
 
     return parsed
