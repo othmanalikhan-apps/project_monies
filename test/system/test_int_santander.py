@@ -1,6 +1,8 @@
 import os
-import pandas as pd
 import unittest
+import datetime
+import pandas as pd
+from pandas.util.testing import assert_frame_equal
 import monies.monies.santander as san
 
 
@@ -12,17 +14,17 @@ DATA_PATH = os.path.join(THIS_DIR, "res")
 class SantanderInt(unittest.TestCase):
 
     def testParseSantanderFile(self):
-        header = ["DATE", "BALANCE", "AMOUNT", "DESCRIPTION"]
+        header = ["DATES", "BALANCE", "AMOUNT", "DESCRIPTION"]
         body = \
         [
-            ["29/12/2012",
-             "3472.63",
-             "-10.45",
+            [datetime.datetime(2012, 12, 29),
+             3472.63,
+             -10.45,
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"],
-            ["29/12/2012",
-             "3472.63",
-             "-10.45",
+            [datetime.datetime(2012, 12, 29),
+             3472.63,
+             -10.45,
              "CARD PAYMENT TO WWW.JUST EAT.CO.UK,10.45 GBP, "
              "RATE 1.00/GBP ON 26-12-2012"],
         ]
@@ -31,9 +33,5 @@ class SantanderInt(unittest.TestCase):
         iPath = os.path.join(DATA_PATH, "san_input.txt")
         out = san.readFile(iPath)
         out = san.parse(out)
-        out = san.swapColumns(out)
 
-        if not out.equals(inp):
-            self.fail("The DataFrames are not equal!\n"
-                      "Expected Header: {}\n"
-                      "Actual Header: {}\n".format(inp.columns, out.columns))
+        assert_frame_equal(inp, out)
