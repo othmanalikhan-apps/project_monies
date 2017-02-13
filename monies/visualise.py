@@ -81,28 +81,31 @@ def plotMonthlyBarChart(data, outDir):
     plot.render_to_file(os.path.join(outDir, 'monthly_bar_chart.svg'))
 
 
-def plotBalanceVsTime(data):
+def plotBalanceVsTime(data, outDir):
     """
     Plots the total balance against time for multiple lines where each line
     represents a category within the data.
 
     :param data: A list containing a title and a DataFrame object for each
     category.
+    :param outDir: The output directory to store the generated plot file.
     """
     # Initialising beautiful plot format
     config = pygal.Config()
     config.human_readable = True
+    config.legend_at_bottom = True
     config.x_label_rotation = 35
     config.x_value_formatter = lambda dt: dt.strftime('%Y-%m-%d')
     config.value_formatter = lambda y: "{:.0f} GBP".format(y)
+    config.title = "Immediate Expense Vs Time"
 
     plot = pygal.DateTimeLine(config)
 
     def prepareDFPlot(df):
         plotData = []
         for i, row in df.iterrows():
-            d = datetime.datetime.strptime(row["DATE"], "%d/%m/%Y")
-            b = float(row["AMOUNT"])
+            d = row["DATES"]
+            b = row["AMOUNT"]
             plotData.append((d, b))
         return plotData
 
@@ -111,9 +114,10 @@ def plotBalanceVsTime(data):
         plot.add(title, sorted(prepareDFPlot(df)))
 
     # Save the plot to a file
-    plot.render_to_file('balance_vs_time.svg')
+    plot.render_to_file(os.path.join(outDir, 'balance_vs_time.svg'))
 
 
+#TODO: WORKING (final change)
 #TODO: Change so that it writes categories (i.e. filename = category + date)
 def write(entries, fPath):
     """
@@ -140,7 +144,7 @@ def main():
     import os
     import monies.monies.santander as san
 
-    iPath = os.path.join("..", "res", "ledgers", "2015.txt")
+    iPath = os.path.join("..", "res", "ledgers", "2012.txt")
     oPath = os.path.join("..", "res", "ledgers", "2015_output.txt")
     #iPath = os.path.join("..", "res", "ledgers", "test.txt")
     oDir = os.path.join("..", "res", "output")
@@ -160,8 +164,8 @@ def main():
     entries.to_csv()
 
     plotData = categorise(entries, categories)
-    plotMonthlyBarChart(plotData, oDir)
-    # plotBalanceVsTime(plotData)
+    # plotMonthlyBarChart(plotData, oDir)
+    plotBalanceVsTime(plotData, oDir)
 
 
 if __name__ == "__main__":
@@ -179,7 +183,4 @@ if __name__ == "__main__":
 # Details: Total expense vs time for all categories
 # Why: Predict in how many years I can buy item X
 # Why: Highlight category with highest expense so that I can cut it.
-#
-# What: Yearly line plot
-# Details: Total expense vs time for all categories
 # Why: Estimate total cash in bank after X years
