@@ -135,8 +135,8 @@ def main():
     ]
 
     entries = san.readFile(iPath)
-    entries = san.parse(entries)
-    entries.to_csv()
+    entries = san.parse(entries)                        # Santander files only
+    entries.to_csv(os.path.join(oDir, "output.csv"))    # Saving CSV output
 
     plotData = categorise(entries, categories)
     plotMonthlyBarChart(plotData, oDir)
