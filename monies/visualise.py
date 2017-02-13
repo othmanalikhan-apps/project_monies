@@ -2,9 +2,8 @@
 A script responsible for visualising money expenditure from bank statements.
 """
 import os
-import datetime
-import numpy as np
 import pygal
+import monies.monies.santander as san
 
 from pygal import style
 
@@ -117,36 +116,11 @@ def plotBalanceVsTime(data, outDir):
     plot.render_to_file(os.path.join(outDir, 'balance_vs_time.svg'))
 
 
-#TODO: WORKING (final change)
-#TODO: Change so that it writes categories (i.e. filename = category + date)
-def write(entries, fPath):
-    """
-    Writes the given data which contains transaction entries into a text
-    file in CSV format.
-
-    :param entries: A dictionary mapping line numbers to transaction entries.
-    :param fPath: The path to the output file.
-    """
-    with open(fPath, "wb") as outF:
-
-        # Writing data using numpy
-        entries = [entry for num, entry in entries.items()]
-        entries = np.array(entries)
-        dFormat = "%10s {0} %9s {0} %8s {0} %s".format(3*" ")
-        np.savetxt(outF, np.array(entries), delimiter=dFormat)
-
-
-
 def main():
     """
-    Runs the script
+    Runs the script.
     """
-    import os
-    import monies.monies.santander as san
-
     iPath = os.path.join("..", "res", "ledgers", "2012.txt")
-    oPath = os.path.join("..", "res", "ledgers", "2015_output.txt")
-    #iPath = os.path.join("..", "res", "ledgers", "test.txt")
     oDir = os.path.join("..", "res", "output")
 
     categories = \
@@ -164,23 +138,9 @@ def main():
     entries.to_csv()
 
     plotData = categorise(entries, categories)
-    # plotMonthlyBarChart(plotData, oDir)
+    plotMonthlyBarChart(plotData, oDir)
     plotBalanceVsTime(plotData, oDir)
 
 
 if __name__ == "__main__":
     main()
-
-
-# BLUEPRINT
-# =========
-#
-# What: Monthly bar plot
-# Details: For every month, all categories vs total expense
-# Why: Find cheapest food ordering scheme
-#
-# What: Yearly line plot
-# Details: Total expense vs time for all categories
-# Why: Predict in how many years I can buy item X
-# Why: Highlight category with highest expense so that I can cut it.
-# Why: Estimate total cash in bank after X years
