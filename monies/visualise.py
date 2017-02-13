@@ -120,16 +120,17 @@ def main():
     """
     Runs the script.
     """
-    iPath = os.path.join("..", "res", "ledgers", "2012.txt")
+    iPath = os.path.join("..", "res", "ledgers", "2015.txt")
     oDir = os.path.join("..", "res", "output")
 
     categories = \
     [
         # (Title, KeyWord)
         ("Food", "JUST EAT"),
-        # ("Aramco", "ARAMCO"),
-        # ("Paypal", "PAYPAL"),
         ("Tesco", "TESCO"),
+        ("Amazon", "Amazon")
+        # ("Paypal", "PAYPAL"),
+        # ("Aramco", "ARAMCO"),
         # ("Misc", ""),
     ]
 

@@ -75,3 +75,4 @@ target/
 
 # Personal bank statement files
 res/ledgers
+res/output
